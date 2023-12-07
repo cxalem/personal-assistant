@@ -1,4 +1,14 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {}
+// next.config.js
 
-module.exports = nextConfig
+module.exports = {
+    reactStrictMode: true,
+    env: {
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    },
+    experimental: {
+      serverActions: true,
+    },
+    images: {
+      domains: [""],
+    },
+  };
