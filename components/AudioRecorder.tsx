@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { speechToText } from "@/lib/speech-to-text";
 import { Transcription } from "openai/resources/audio/transcriptions.mjs";
+import Lottie from "lottie-react";
+import animationData from "../assets/animated-mic.json";
 
 const toBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -19,11 +21,13 @@ export const AudioRecorder = () => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [response, setResponse] = useState<string>("");
   const [text, setText] = useState<Transcription | undefined>();
+  const lottieRef = useRef<any | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
 
   const startRecording = async () => {
+    lottieRef.current?.play();
     audioChunks.current = []; // reset audio chunks
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -47,6 +51,7 @@ export const AudioRecorder = () => {
 
   const stopRecording = async () => {
     mediaRecorderRef.current?.stop();
+    lottieRef.current?.stop();
     setIsRecording(false);
   };
 
@@ -57,7 +62,6 @@ export const AudioRecorder = () => {
   };
 
   const handleTextToChatGPT = async () => {
-    console.log(text);
     if (!text) return;
     try {
       const response = await fetch("/api/text-to-chatgpt", {
@@ -65,7 +69,7 @@ export const AudioRecorder = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ messages: text }),
       });
       if (!response.ok || response.body == null)
         throw new Error(response.statusText);
@@ -92,12 +96,18 @@ export const AudioRecorder = () => {
   }, [text]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <Button onClick={isRecording ? stopRecording : startRecording}>
-        {isRecording ? "Stop Recording" : "Start Recording"}
-      </Button>
-      {audioUrl && <audio src={audioUrl} controls />}
-      <Button>Speech to Text</Button>
+    <div className="flex flex-col items-center gap-4">
+      <button
+        className="relative w-14 h-14"
+        onClick={isRecording ? stopRecording : startRecording}
+      >
+        <Lottie
+          autoplay={false}
+          className="w-52 h-52 absolute top-[-72px] left-[-76px]"
+          lottieRef={lottieRef}
+          animationData={animationData}
+        />
+      </button>
       <div>{response}</div>
     </div>
   );
