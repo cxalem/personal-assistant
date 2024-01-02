@@ -1,24 +1,15 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Button } from "./ui/button";
 import { speechToText } from "@/lib/speech-to-text";
 import { Transcription } from "openai/resources/audio/transcriptions.mjs";
 import Lottie from "lottie-react";
 import animationData from "../assets/animated-mic.json";
-
-const toBase64 = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+import { useAccount } from "wagmi";
 
 export const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [response, setResponse] = useState<string>("");
   const [text, setText] = useState<Transcription | undefined>();
   const lottieRef = useRef<any | null>(null);
@@ -26,9 +17,11 @@ export const AudioRecorder = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
 
+  const { isConnected } = useAccount();
+
   const startRecording = async () => {
-    lottieRef.current?.play();
     audioChunks.current = []; // reset audio chunks
+    lottieRef.current?.play();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
@@ -40,7 +33,6 @@ export const AudioRecorder = () => {
           type: "audio/m4a",
         });
         setAudioBlob(audioBlob);
-        setAudioUrl(URL.createObjectURL(audioBlob));
       };
       mediaRecorderRef.current.start();
       setIsRecording(true);
@@ -57,8 +49,10 @@ export const AudioRecorder = () => {
 
   const handleSpeechToText = async () => {
     if (!audioBlob) return;
-    const text = await speechToText(new File([audioBlob], "speech.m4a"));
-    setText(text);
+    const convertedText = await speechToText(
+      new File([audioBlob], "speech.m4a")
+    );
+    setText(convertedText);
   };
 
   const handleTextToChatGPT = async () => {
@@ -95,15 +89,20 @@ export const AudioRecorder = () => {
     handleTextToChatGPT();
   }, [text]);
 
+  if (!isConnected) {
+    return (
+      <p className="mt-32 text-2xl font-medium max-w-md text-center mx-auto">
+        Looks like you&apos;re not connected, please connect your wallet to
+        continue!
+      </p>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center gap-4">
-      <button
-        className="relative w-14 h-14"
-        onClick={isRecording ? stopRecording : startRecording}
-      >
+    <div className="flex flex-col items-center gap-4 mt-10">
+      <button onClick={isRecording ? stopRecording : startRecording}>
         <Lottie
           autoplay={false}
-          className="w-52 h-52 absolute top-[-72px] left-[-76px]"
           lottieRef={lottieRef}
           animationData={animationData}
         />
