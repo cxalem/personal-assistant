@@ -31,4 +31,5 @@ export const speechToText = async (audio_file: File | Buffer) => {
       console.error(e);
     }
   }
+  
 };
