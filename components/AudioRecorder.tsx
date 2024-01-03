@@ -49,11 +49,14 @@ export const AudioRecorder = () => {
 
   const handleSpeechToText = async () => {
     if (!audioBlob) return;
-    console.log("speech to text");
-    const convertedText = await speechToText(
-      new File([audioBlob], "user-speech.m4a")
-    );
-    setText(convertedText);
+    try {
+      const convertedText = await speechToText(
+        new File([audioBlob], "user-speech.m4a")
+      );
+      setText(convertedText);
+    } catch (err) {
+      console.error("Error converting the audio", err);
+    }
   };
 
   const handleTextToChatGPT = async () => {
