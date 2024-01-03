@@ -47,47 +47,47 @@ export const AudioRecorder = () => {
     setIsRecording(false);
   };
 
-  const handleSpeechToText = async () => {
-    if (!audioBlob) return;
-    const convertedText = await speechToText(
-      new File([audioBlob], "user-speech.m4a")
-    );
-    setText(convertedText);
-  };
+  // const handleSpeechToText = async () => {
+  //   if (!audioBlob) return;
+  //   const convertedText = await speechToText(
+  //     new File([audioBlob], "user-speech.m4a")
+  //   );
+  //   setText(convertedText);
+  // };
 
-  const handleTextToChatGPT = async () => {
-    if (!text) return;
-    try {
-      const response = await fetch("/api/text-to-chatgpt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ messages: text }),
-      });
-      if (!response.ok || response.body == null)
-        throw new Error(response.statusText);
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+  // const handleTextToChatGPT = async () => {
+  //   if (!text) return;
+  //   try {
+  //     const response = await fetch("/api/text-to-chatgpt", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ messages: text }),
+  //     });
+  //     if (!response.ok || response.body == null)
+  //       throw new Error(response.statusText);
+  //     const reader = response.body.getReader();
+  //     const decoder = new TextDecoder();
 
-      while (true) {
-        const { done, value } = await reader.read();
-        const chunk = decoder.decode(value);
-        setResponse((prev: string) => prev + chunk);
-        if (done) break;
-      }
-    } catch (err) {
-      console.error("Error accessing microphone:", err);
-    }
-  };
+  //     while (true) {
+  //       const { done, value } = await reader.read();
+  //       const chunk = decoder.decode(value);
+  //       setResponse((prev: string) => prev + chunk);
+  //       if (done) break;
+  //     }
+  //   } catch (err) {
+  //     console.error("Error accessing microphone:", err);
+  //   }
+  // };
 
-  useEffect(() => {
-    handleSpeechToText();
-  }, [audioBlob]);
+  // useEffect(() => {
+  //   handleSpeechToText();
+  // }, [audioBlob]);
 
-  useEffect(() => {
-    handleTextToChatGPT();
-  }, [text]);
+  // useEffect(() => {
+  //   handleTextToChatGPT();
+  // }, [text]);
 
   if (!isConnected) {
     return (
