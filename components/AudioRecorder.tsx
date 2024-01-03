@@ -50,7 +50,7 @@ export const AudioRecorder = () => {
   const handleSpeechToText = async () => {
     if (!audioBlob) return;
     const convertedText = await speechToText(
-      new File([audioBlob], "speech.m4a")
+      new File([audioBlob], "user-speech.m4a")
     );
     setText(convertedText);
   };
@@ -82,11 +82,11 @@ export const AudioRecorder = () => {
   };
 
   useEffect(() => {
-    // handleSpeechToText();
+    handleSpeechToText();
   }, [audioBlob]);
 
   useEffect(() => {
-    // handleTextToChatGPT();
+    handleTextToChatGPT();
   }, [text]);
 
   if (!isConnected) {

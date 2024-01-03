@@ -5,14 +5,13 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export const speechToText = async (audio: File) => {
+export const speechToText = async (userAudio: File) => {
   try {
     const result = await openai.audio.transcriptions.create({
       model: "whisper-1",
-      file: audio,
+      file: userAudio,
       response_format: "text",
     });
-    console.log(result);
     return result;
   } catch (e) {
     console.error(e);
