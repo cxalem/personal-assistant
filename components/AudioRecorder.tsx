@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { speechToText } from "@/lib/speech-to-text";
 import Lottie from "lottie-react";
 import animationData from "../assets/animated-mic.json";
 import { useAccount } from "wagmi";
@@ -12,12 +11,13 @@ export const AudioRecorder = () => {
   const [audioBlob, setAudioBlob] = useState<Blob | undefined>();
   const [response, setResponse] = useState<string>("");
   const [text, setText] = useState<Transcription | undefined>();
-  const lottieRef = useRef<any | null>(null);
+  const [completed, setCompleted] = useState(false);
 
+  const lottieRef = useRef<any | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
 
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
 
   const startRecording = async () => {
     audioChunks.current = []; // reset audio chunks
@@ -61,7 +61,6 @@ export const AudioRecorder = () => {
         throw new Error(response.statusText);
       const data = await response.json();
       const convertedText = data.result;
-      console.log(convertedText)
       setText(convertedText);
     } catch (err) {
       console.error("Error converting the audio", err);
@@ -87,10 +86,36 @@ export const AudioRecorder = () => {
         const { done, value } = await reader.read();
         const chunk = decoder.decode(value);
         setResponse((prev: string) => prev + chunk);
-        if (done) break;
+        if (done) {
+          setCompleted(true);
+          break;
+        }
       }
     } catch (err) {
       console.error("Error accessing microphone:", err);
+    }
+  };
+
+  const handleTextToSpeech = async () => {
+    if (!response || !completed) return;
+    try {
+      const res = await fetch("/api/text-to-speech", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: response,
+        }),
+      });
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.play();
+      setCompleted(false);
+    } catch (err) {
+      console.error("Error getting the audio:", err);
     }
   };
 
@@ -102,11 +127,22 @@ export const AudioRecorder = () => {
     handleTextToChatGPT();
   }, [text]);
 
+  useEffect(() => {
+    handleTextToSpeech();
+  }, [completed]);
+
   if (!isConnected) {
     return (
       <p className="mt-32 text-2xl font-medium max-w-md text-center mx-auto">
         Looks like you&apos;re not connected, please connect your wallet to
         continue!
+      </p>
+    );
+  } else if (address !== process.env.PERSONAL_ADDRESS) {
+    return (
+      <p className="mt-32 text-2xl font-medium max-w-md text-center mx-auto">
+        Looks like you&apos;re not the owner of this site! What are you doing
+        here?
       </p>
     );
   }
@@ -120,7 +156,6 @@ export const AudioRecorder = () => {
           animationData={animationData}
         />
       </button>
-      <div>{response}</div>
     </div>
   );
 };
