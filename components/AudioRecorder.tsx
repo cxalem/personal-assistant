@@ -49,6 +49,7 @@ export const AudioRecorder = () => {
 
   const handleSpeechToText = async () => {
     if (!audioBlob) return;
+    console.log("Speech to text");
     const convertedText = await speechToText(
       new File([audioBlob], "speech.m4a")
     );
@@ -82,7 +83,7 @@ export const AudioRecorder = () => {
   };
 
   useEffect(() => {
-    handleSpeechToText();
+    // handleSpeechToText();
   }, [audioBlob]);
 
   useEffect(() => {
