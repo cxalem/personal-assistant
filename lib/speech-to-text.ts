@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { toFile } from "openai/uploads";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -6,9 +7,7 @@ const openai = new OpenAI({
 
 export const speechToText = async (audio_file: Buffer) => {
   try {
-    const audioFile = new File([audio_file], "tempSpeech.m4a", {
-      type: "audio/m4a",
-    });
+    const audioFile = await toFile(audio_file);
     const result = await openai.audio.transcriptions.create({
       model: "whisper-1",
       file: audioFile,
