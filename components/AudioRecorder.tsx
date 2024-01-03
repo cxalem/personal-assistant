@@ -50,9 +50,17 @@ export const AudioRecorder = () => {
   const handleSpeechToText = async () => {
     if (!audioBlob) return;
     try {
-      const convertedText = await speechToText(
-        new File([audioBlob], "user-speech.m4a")
-      );
+      const response = await fetch("/api/speech-to-text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: audioBlob,
+      });
+      if (!response.ok || response.body == null)
+        throw new Error(response.statusText);
+      const data = await response.json();
+      const convertedText = data.result;
       setText(convertedText);
     } catch (err) {
       console.error("Error converting the audio", err);
