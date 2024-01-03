@@ -47,13 +47,14 @@ export const AudioRecorder = () => {
     setIsRecording(false);
   };
 
-  // const handleSpeechToText = async () => {
-  //   if (!audioBlob) return;
-  //   const convertedText = await speechToText(
-  //     new File([audioBlob], "user-speech.m4a")
-  //   );
-  //   setText(convertedText);
-  // };
+  const handleSpeechToText = async () => {
+    if (!audioBlob) return;
+    console.log("speech to text");
+    const convertedText = await speechToText(
+      new File([audioBlob], "user-speech.m4a")
+    );
+    setText(convertedText);
+  };
 
   const handleTextToChatGPT = async () => {
     if (!text) return;
@@ -81,9 +82,9 @@ export const AudioRecorder = () => {
     }
   };
 
-  // useEffect(() => {
-  //   handleSpeechToText();
-  // }, [audioBlob]);
+  useEffect(() => {
+    handleSpeechToText();
+  }, [audioBlob]);
 
   useEffect(() => {
     handleTextToChatGPT();

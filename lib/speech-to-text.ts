@@ -5,11 +5,11 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export const speechToText = async (userAudio: File) => {
+export const speechToText = async (audio_file: File) => {
   try {
     const result = await openai.audio.transcriptions.create({
       model: "whisper-1",
-      file: userAudio,
+      file: audio_file,
       response_format: "text",
     });
     return result;
