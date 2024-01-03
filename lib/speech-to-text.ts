@@ -6,10 +6,6 @@ const openai = new OpenAI({
 
 export const speechToText = async (audio_file: Buffer) => {
   try {
-    // const audioFile = new File([audio_file], "tempSpeech.m4a", {
-    //   type: "audio/m4a",
-    // });
-
     const audioFile = await toFile(audio_file, "tempSpeech.m4a", {
       type: "audio/m4a",
     });
