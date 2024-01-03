@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { speechToText } from "@/lib/speech-to-text";
-import { Transcription } from "openai/resources/audio/transcriptions.mjs";
 import Lottie from "lottie-react";
 import animationData from "../assets/animated-mic.json";
 import { useAccount } from "wagmi";
+import type { Transcription } from "openai/resources/audio/transcriptions";
 
 export const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);

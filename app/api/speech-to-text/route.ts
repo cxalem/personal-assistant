@@ -1,6 +1,6 @@
 import { speechToText } from "@/lib/speech-to-text";
 
-export async function POST(req: Response) {
+export async function POST(req: Request) {
   const { audio } = await req.json();
   const audioBuffer = Buffer.from(audio, "base64");
   const audioFile = new File([audioBuffer], "tempSpeech.m4a", {
