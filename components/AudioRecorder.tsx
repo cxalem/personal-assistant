@@ -61,6 +61,7 @@ export const AudioRecorder = () => {
         throw new Error(response.statusText);
       const data = await response.json();
       const convertedText = data.result;
+      console.log(convertedText)
       setText(convertedText);
     } catch (err) {
       console.error("Error converting the audio", err);
