@@ -52,10 +52,10 @@ export const Chat = () => {
   return (
     <div className="relative bg-white shadow-md flex flex-col gap-4 shadow-gray-100 rounded-xl md:px-10 md:pt-10 w-[90vw] overflow-scroll h-[50vh] md:w-[60vw] mx-auto">
       <div className="flex-1">
-        {questions.map(({ question, answer, answered }, index) => {
+        {questions.map(({ question, answer, answered }) => {
           if (!answered) return null;
           return (
-            <div key={index} className="flex flex-col gap-4">
+            <div key={question} className="flex flex-col gap-4">
               <Message message={question} type="user" />
               <Message message={answer} type="system" />
             </div>
@@ -66,7 +66,7 @@ export const Chat = () => {
         {questions.map(({ question, answer, answered }, index) => (
           <button
             onClick={() => handleQuestionClick({ question, answer })}
-            key={index}
+            key={question}
             className={`border text-start ${
               answered
                 ? "opacity-50 cursor-not-allowed"
