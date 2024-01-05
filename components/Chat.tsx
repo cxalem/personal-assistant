@@ -63,7 +63,7 @@ export const Chat = () => {
         })}
       </div>
       <div className="sticky bg-white md:py-4 rounded-b-xl h-full max-h-[164px] z-10 bottom-0 grid grid-cols-2 w-full gap-4">
-        {questions.map(({ question, answer, answered }, index) => (
+        {questions.map(({ question, answer, answered }) => (
           <button
             onClick={() => handleQuestionClick({ question, answer })}
             key={question}

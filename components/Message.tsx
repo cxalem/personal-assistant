@@ -33,6 +33,7 @@ export const Message = ({
   useEffect(() => {
     if (type === "system") handleTextToSpeech(message);
   }, []);
+  
   return (
     <>
       {type === "user" ? (
