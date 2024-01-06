@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Message } from "./Message";
 
 type Question = {
@@ -39,7 +39,7 @@ const DEFAULT_QUESTIONS: Question[] = [
 export const Chat = () => {
   const [questions, setQuestions] = useState<Question[]>(DEFAULT_QUESTIONS);
 
-  const handleQuestionClick = async (selectedQuestion: Question) => {
+  const handleQuestionClick = useCallback((selectedQuestion: Question) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) =>
         question.question === selectedQuestion.question
@@ -47,7 +47,24 @@ export const Chat = () => {
           : question
       )
     );
-  };
+  }, []);
+
+  const questionButtons = useMemo(() => {
+    return questions.map((question) => (
+      <button
+        onClick={() => handleQuestionClick(question)}
+        key={question.question}
+        disabled={question.answered}
+        className={`border text-start ${
+          question.answered
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:shadow-lg hover:shadow-gray-100 cursor-pointer"
+        } duration-150 transition bg-gray-50 px-6 py-4 rounded-md max-w-md`}
+      >
+        {question.question}
+      </button>
+    ));
+  }, [questions, handleQuestionClick]);
 
   return (
     <div className="relative bg-white shadow-md flex flex-col gap-4 shadow-gray-100 rounded-xl md:px-10 md:pt-10 w-[90vw] overflow-scroll h-[50vh] md:w-[60vw] mx-auto">
@@ -63,20 +80,7 @@ export const Chat = () => {
         })}
       </div>
       <div className="sticky bg-white md:py-4 rounded-b-xl h-full max-h-[164px] z-10 bottom-0 grid grid-cols-2 w-full gap-4">
-        {questions.map(({ question, answer, answered }) => (
-          <button
-            onClick={() => handleQuestionClick({ question, answer })}
-            key={question}
-            className={`border text-start ${
-              answered
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:shadow-lg hover:shadow-gray-100 cursor-pointer"
-            } duration-150 transition bg-gray-50 px-6 py-4 rounded-md max-w-md`}
-            disabled={answered}
-          >
-            {question}
-          </button>
-        ))}
+        {questionButtons}
       </div>
     </div>
   );

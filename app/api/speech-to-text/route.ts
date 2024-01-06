@@ -1,4 +1,4 @@
-import { speechToText } from "@/lib/speech-to-text";
+import { speechToText } from "@/ai.ts/speech-to-text.server";
 
 export async function POST(req: Request) {
   const audioBlob = await req.blob();
