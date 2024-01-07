@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Message = ({
   message,
@@ -9,30 +9,13 @@ export const Message = ({
 }) => {
   const [answering, setAnswering] = useState(true);
 
-  const handleTextToSpeech = useCallback(async (text: string) => {
-    try {
-      const res = await fetch("/api/text-to-speech", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text }),
-      });
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audio.play();
-      setAnswering(false);
-    } catch (err) {
-      console.error("Error getting the audio:", err);
-      setAnswering(false);
-    }
-  }, []);
-
   useEffect(() => {
-    if (type === "system") handleTextToSpeech(message);
-  }, [message, type, handleTextToSpeech]);
+    if (type === "system") {
+      setTimeout(() => {
+        setAnswering(false);
+      }, message.length * 12);
+    }
+  }, [message, type]);
 
   return (
     <>
