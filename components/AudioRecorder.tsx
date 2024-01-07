@@ -120,16 +120,16 @@ export const AudioRecorder = () => {
   };
 
   useEffect(() => {
-    if (audioBlob) {
-      handleSpeechToText();
-    }
-    if (text) {
-      handleTextToChatGPT();
-    }
-    if (completed) {
-      handleTextToSpeech();
-    }
-  }, [audioBlob, text, completed]);
+    handleSpeechToText();
+  }, [audioBlob]);
+
+  useEffect(() => {
+    handleTextToChatGPT();
+  }, [text]);
+
+  useEffect(() => {
+    handleTextToSpeech();
+  }, [completed]);
 
   if (!isConnected) {
     return (
