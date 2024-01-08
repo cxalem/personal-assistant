@@ -20,6 +20,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({
   if (isConnected) {
     return (
       <Button
+        type="button"
         className="bg-green-500 hover:bg-green-400 px-10"
         onClick={() => disconnect()}
       >
@@ -30,6 +31,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({
 
   return (
     <Button
+      type="button"
       className="bg-green-500 hover:bg-green-400 px-10"
       onClick={() => connect()}
     >

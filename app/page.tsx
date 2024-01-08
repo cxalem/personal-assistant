@@ -1,5 +1,11 @@
 import { Chat } from "@/components/Chat";
 import { LoginButton } from "@/components/LoginButton";
+import type { Metadata } from "next/types";
+
+export const metadata: Metadata = {
+  title: "TRAVIS P.A.",
+  description: "A personal assistant build by Alejandro for Alejandro",
+};
 
 export default function Home() {
   return (
