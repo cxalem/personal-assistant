@@ -12,7 +12,7 @@ export default function RootLayout({
       <body className={`bg-gray-100 bg-opacity-40 min-h-screen`}>
         <Providers>
           <Nav />
-          <main className="max-w-6xl mx-auto">{children}</main>
+          <main className="max-w-6xl mx-auto pb-20">{children}</main>
         </Providers>
       </body>
     </html>
