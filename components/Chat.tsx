@@ -42,6 +42,7 @@ export const Chat = () => {
   const [answering, setAnswering] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
+  // This function will move the selected question to the end of the array
   const handleArrayElement = (arr: Question[], question: Question) => {
     const fromIndex = arr.indexOf(question);
     const toIndex = arr.length - 1;
